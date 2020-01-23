@@ -1,0 +1,34 @@
+{
+  "name": "axios-retry-recursive",
+  "version": "1.0.0",
+  "description": "axios-retry-recursive",
+  "main": "main.js",
+  "scripts": {
+    "build": "rimraf -rf dist/ && tsc",
+    "test": "jest"
+  },
+  "peerDependencies": {
+    "axios": "^0.19.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haikelfazzani/axios-retry-recursive.git.git"
+  },
+  "bugs": {
+    "url": "https://github.com/haikelfazzani/axios-retry-recursive.git/issues"
+  },
+  "homepage": "https://github.com/haikelfazzani/axios-retry-recursive.git#readme",
+  "keywords": [
+    "axios",
+    "retry",
+    "recursive",
+    "umd"
+  ],
+  "author": "Haikel Fazzani",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "axios": "^0.19.2",
+    "rimraf": "^3.0.0"
+  }
+}

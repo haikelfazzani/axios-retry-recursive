@@ -9,11 +9,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 99;
 }
 
 .modal button {
-  margin-top: 40px;
+  margin-top: 20px;
   background-color: #000000b0;
   border: 0;
   text-transform: uppercase;
+  padding: 10px 25px;
+  color: #fff;
 }

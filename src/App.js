@@ -1,55 +1,54 @@
 import React, { useState, useEffect, useContext } from "react";
-import useYtPlayer from "./hooks/useYtPlayer";
 import StorageManager from "./util/StorageManager";
+import Modal from './components/Modal';
 import './index.scss';
 import ListTracks from "./containers/ListTracks";
 import PlayerControls from "./containers/PlayerControls";
 import GlobalContext from "./providers/GlobalContext";
+import Valid from './util/Valid.js';
 
 export default function App () {
 
   const { globalState, setGlobalState } = useContext(GlobalContext);
-
-  var { player } = useYtPlayer();
-  const [vidInfos, setVidInfos] = useState({ vidId: '', vidTitle: null });
-
+  const [vidInfos, setVidInfos] = useState({ vidId: '', vidTitle: null, avatar: '' });
   const [vidList, setVidList] = useState([]);
-  
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (player) {
+    if (window.player) {
       player.addEventListener('onReady', async () => {
         let listVids = await StorageManager.getList();
         setVidList(listVids);
       });
     }
-
-  }, [player]);
+  }, [window.player]);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    let p = [...vidList];
+    if (Valid.ytUrl(vidInfos.vidId)) {
+      let p = [...vidList];
 
-    if (!p.some(v => v.vidId === vidInfos.vidId)) {
-      window.ytdlCore.getBasicInfo(vidInfos.vidId, (err, info) => {
+      if (!p.some(v => v.vidId === vidInfos.vidId)) {
 
-        p.push({ vidId: vidInfos.vidId, vidTitle: info.title });
+        let inputVidId = vidInfos.vidId.split('watch?v=')[1] || vidInfos.vidId;
 
-        setVidInfos({ ...vidInfos, vidTitle: info.title })
-        setVidList(p);
+        window.ytdlCore.getBasicInfo(inputVidId, (err, info) => {
 
-        StorageManager.saveOne({
-          vidId: vidInfos.vidId,
-          vidTitle: info.title
+          p.push({ vidId: inputVidId, vidTitle: info.title, avatar: info.author.avatar });
+
+          setVidInfos({ ...vidInfos, vidTitle: info.title, avatar: info.author.avatar });
+          setVidList(p);
+
+          StorageManager.saveOne({ vidId: inputVidId, vidTitle: info.title, avatar: info.author.avatar });
+          setVidInfos({ vidId: '' });
         });
-
-      });
+      }
     }
   }
 
   const onVidClick = (vidId, vidIdx) => {
-    if (player) {
-      player.loadVideoById(vidId);
+    if (window.player) {
+      window.player.loadVideoById(vidId);
       setGlobalState({
         ...globalState, controls: {
           ...globalState.controls,
@@ -71,7 +70,7 @@ export default function App () {
 
     <div className="player">
 
-      <PlayerControls player={player} />
+      <PlayerControls player={window.player} />
 
       {vidList && vidList.length > 0
         && <ListTracks
@@ -82,16 +81,29 @@ export default function App () {
         />}
     </div>
 
-    <form onSubmit={onSubmit}>
-      <input
-        type="text"
-        onChange={(e) => { setVidInfos({ vidId: e.target.value }); }}
-        value={vidInfos.vidId}
-        placeholder="Enter video id: QB-fo_bGnQs"
-        required
-      />
-      <button type="submit"><i className="fas fa-plus-circle"></i></button>
-    </form>
+    <div className="bottom-banner">
+      <form onSubmit={onSubmit}>
+        <input
+          type="text"
+          onChange={(e) => { setVidInfos({ vidId: e.target.value }); }}
+          value={vidInfos.vidId}
+          placeholder="Example: https://www.youtube.com/watch?v=WpN8HiZ4Ojw"
+          required
+        />
 
+        <button type="submit"><i className="fas fa-plus-circle"></i></button>
+      </form>
+
+      <button onClick={() => { setIsModalOpen(!isModalOpen); }}>
+        <i className="fab fa-dyalog"></i>
+      </button>
+    </div>
+
+    {isModalOpen && <Modal>
+      <div className="about">
+        <p>Copyright © Yplayer - 2020</p>
+        <a href="https://github.com/haikelfazzani">Created by Haikel Fazzani</a>
+      </div>
+    </Modal>}
   </>);
 }

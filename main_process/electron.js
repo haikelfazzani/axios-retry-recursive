@@ -3,7 +3,7 @@ const { app, BrowserWindow, Menu } = electron;
 const ctxMenu = require('./context-menu');
 
 let mainWindow;
-let isProd = false;
+let isProd = true;
 
 function createWindow () {
   mainWindow = new BrowserWindow({

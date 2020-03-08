@@ -8,8 +8,7 @@ export default function App () {
   var { player, isPlayerReady } = useYtPlayer();
   const [vidInfos, setVidInfos] = useState({
     vidId: '',
-    vidTitle: null,
-    duration: ''
+    vidTitle: null
   });
 
   const [playerVolume, setPlayerVolume] = useState(50);
@@ -38,28 +37,29 @@ export default function App () {
     if (!p.some(v => v.vidId === vidInfos.vidId)) {
       window.ytdlCore.getBasicInfo(vidInfos.vidId, (err, info) => {
 
-        p.push({ vidId: vidInfos.vidId, vidTitle: info.title, duration: player.getDuration() });
+        p.push({ vidId: vidInfos.vidId, vidTitle: info.title });
 
-        setVidInfos({ ...vidInfos, vidTitle: info.title, duration: player.getDuration() })
+        setVidInfos({ ...vidInfos, vidTitle: info.title })
         setVidList(p);
 
         StorageManager.saveOne({
           vidId: vidInfos.vidId,
-          vidTitle: info.title,
-          duration: player.getDuration()
+          vidTitle: info.title
         });
+
       });
     }
   }
 
   const onVidClick = (vidId) => {
-    player.loadVideoById(vidId);
+    if (player) {
+      player.loadVideoById(vidId);
+    }
   }
 
-  return (
-    <div className="d-flex-col-sp h-100 w-100">
+  return (<div className="d-flex-col-sp h-100 w-100">
 
-      <div className="w-100 h-95">
+      <div className="w-100 h-90">
 
         <div className="controls w-100">
           <button onClick={playVideo}><i className="fas fa-play"></i></button>
@@ -73,11 +73,8 @@ export default function App () {
           </div>
         </div>
 
-        {vidInfos.vidTitle && <p>{vidInfos.vidTitle}</p>}
-        {vidInfos.duration && <p>{vidInfos.duration}</p>}
-
         {vidList && vidList.length > 0 && <ul className="h-100">
-          {vidList.map((video, i) => <li key={video.vidId + i} className="d-flex-sp">
+          {vidList.map((video, i) => <li key={video.vidId + i} id={video.vidId} className="d-flex-sp">
             <div onClick={() => { onVidClick(video.vidId) }} className="w-70">
               {video.vidTitle} {video.duration}
             </div>
@@ -86,9 +83,9 @@ export default function App () {
         </ul>}
       </div>
 
-      <form onSubmit={onSubmit} className="w-100 h-5">
+      <form onSubmit={onSubmit} className="w-100 h-10">
         <input type="text" onChange={(e) => { setVidInfos({ vidId: e.target.value }); }}
-          value={vidInfos.vidId} 
+          value={vidInfos.vidId}
           placeholder="Enter video id: QB-fo_bGnQs"
           required />
         <button type="submit">add</button>

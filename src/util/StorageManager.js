@@ -16,8 +16,8 @@ export default class StorageManager {
   }
 
   static async removeOne (vidId) {
-    let listVids = this.getList();
-    let newData = listVids.filter(d => d.vidId === vidId);
+    let listVids = await this.getList();    
+    let newData = listVids.filter(d => d.vidId !== vidId);
     await window.fsPromises.writeFile(configPath, JSON.stringify(newData), { encoding: 'utf8' });
   }
 

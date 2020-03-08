@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Youtube audio player for windows",
   "main": "dist/electron.js",
+  "icon": "icons/logo.ico",
   "scripts": {
     "start": "webpack-dev-server  --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
@@ -62,7 +63,11 @@
         }
       ]
     },
-    "nsis": {},
+    "nsis": {
+      "installerIcon": "icons/logo.ico",
+      "uninstallerIcon": "icons/logo.ico",
+      "license": "License"
+    },
     "directories": {
       "buildResources": "dist",
       "output": "build"

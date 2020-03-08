@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 export default function YoutubePlayer () {
 
   const [player, setPlayer] = useState();
-  const [isPlayerReady, setIsPlayerReady] = useState(false);
 
   useEffect(() => {
 
@@ -25,19 +24,9 @@ export default function YoutubePlayer () {
       });
       
       setPlayer(ytPlayer);
-
-      ytPlayer.addEventListener('onReady', () => {
-        setIsPlayerReady(true);
-        ytPlayer.setVolume(100);
-      });
-
-      ytPlayer.addEventListener('onStateChange', () => {
-        // console.log('onStateChange');
-        // console.log(ytPlayer.getVideoData());
-      });
      })()
 
   }, []);
 
-  return { player, setPlayer, isPlayerReady };
+  return { player, setPlayer };
 }

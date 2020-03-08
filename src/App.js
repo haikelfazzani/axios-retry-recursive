@@ -1,34 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import useYtPlayer from "./hooks/useYtPlayer";
 import StorageManager from "./util/StorageManager";
 import './index.scss';
+import ListTracks from "./containers/ListTracks";
+import PlayerControls from "./containers/PlayerControls";
+import GlobalContext from "./providers/GlobalContext";
 
 export default function App () {
 
-  var { player, isPlayerReady } = useYtPlayer();
-  const [vidInfos, setVidInfos] = useState({
-    vidId: '',
-    vidTitle: null
-  });
+  const { globalState, setGlobalState } = useContext(GlobalContext);
 
-  const [playerVolume, setPlayerVolume] = useState(50);
+  var { player } = useYtPlayer();
+  const [vidInfos, setVidInfos] = useState({ vidId: '', vidTitle: null });
 
   const [vidList, setVidList] = useState([]);
 
   useEffect(() => {
-    (async () => {
-      let listVids = await StorageManager.getList();
-      setVidList(listVids);
-    })();
-  }, []);
+    if (player) {
+      player.addEventListener('onReady', async () => {
+        let listVids = await StorageManager.getList();
+        setVidList(listVids);
+      });
+    }
 
-  const playVideo = () => { player.playVideo() }
-  const pauseVideo = () => { player.pauseVideo() }
-  const stopVideo = () => { player.stopVideo() }
-  const onVolume = (e) => {
-    setPlayerVolume(e.target.value);
-    player.setVolume(e.target.value);
-  }
+  }, [player]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -51,45 +46,51 @@ export default function App () {
     }
   }
 
-  const onVidClick = (vidId) => {
+  const onVidClick = (vidId, vidIdx) => {
     if (player) {
       player.loadVideoById(vidId);
+      setGlobalState({
+        ...globalState, controls: {
+          ...globalState.controls,
+          currentVidPlay: vidIdx,
+          currVidTitle: vidList[vidIdx].vidTitle
+        }
+      });
     }
   }
 
-  return (<div className="d-flex-col-sp h-100 w-100">
+  const onRemoveTrack = async (vidId) => {
+    let p = [...vidList];
+    p = p.filter(v => v.vidId !== vidId);
+    setVidList(p);
+    await StorageManager.removeOne(vidId);
+  }
 
-      <div className="w-100 h-90">
+  return (<>
 
-        <div className="controls w-100">
-          <button onClick={playVideo}><i className="fas fa-play"></i></button>
-          <button onClick={pauseVideo}><i className="fas fa-pause"></i></button>
-          <button onClick={stopVideo}><i className="fas fa-stop"></i></button>
+    <div className="player">
 
-          <div className="d-flex">
-            <i className="fas fa-volume-mute"></i>
-            <input type="range" min="1" max="100" onChange={onVolume} value={playerVolume} />
-            <i className="fas fa-volume-up"></i>
-          </div>
-        </div>
+      <PlayerControls player={player} />
 
-        {vidList && vidList.length > 0 && <ul className="h-100">
-          {vidList.map((video, i) => <li key={video.vidId + i} id={video.vidId} className="d-flex-sp">
-            <div onClick={() => { onVidClick(video.vidId) }} className="w-70">
-              {video.vidTitle} {video.duration}
-            </div>
-            <button className="w-10"><i className="fas fa-trash"></i></button>
-          </li>)}
-        </ul>}
-      </div>
+      {vidList && vidList.length > 0
+        && <ListTracks
+          vidList={vidList}
+          playerControls={globalState.controls}
+          onVidClick={onVidClick}
+          onRemoveTrack={onRemoveTrack}
+        />}
+    </div>
 
-      <form onSubmit={onSubmit} className="w-100 h-10">
-        <input type="text" onChange={(e) => { setVidInfos({ vidId: e.target.value }); }}
-          value={vidInfos.vidId}
-          placeholder="Enter video id: QB-fo_bGnQs"
-          required />
-        <button type="submit">add</button>
-      </form>
+    <form onSubmit={onSubmit}>
+      <input
+        type="text"
+        onChange={(e) => { setVidInfos({ vidId: e.target.value }); }}
+        value={vidInfos.vidId}
+        placeholder="Enter video id: QB-fo_bGnQs"
+        required
+      />
+      <button type="submit"><i className="fas fa-plus-circle"></i></button>
+    </form>
 
-    </div>);
+  </>);
 }

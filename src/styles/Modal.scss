@@ -1,0 +1,19 @@
+.modal {
+  height: 100%;
+  width: 100%;
+  background-color: #000000b0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal button {
+  margin-top: 40px;
+  background-color: #000000b0;
+  border: 0;
+  text-transform: uppercase;
+}

@@ -3,11 +3,11 @@ const { app, BrowserWindow, Menu } = electron;
 const ctxMenu = require('./context-menu');
 
 let mainWindow;
-let isProd = false;
+let isProd = true;
 
 function createWindow () {
   mainWindow = new BrowserWindow({
-    width: 600, height: 500,
+    width: 500, height: 550,
     webPreferences: {
       nodeIntegration: true,
       preload: __dirname + '/preload.js'

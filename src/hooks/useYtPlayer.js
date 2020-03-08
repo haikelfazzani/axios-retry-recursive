@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 
+var ytPlayer;
+
 export default function YoutubePlayer () {
 
   const [player, setPlayer] = useState();
 
   useEffect(() => {
+    window['onYouTubeIframeAPIReady'] = (e) => {
+      let divEl = document.createElement('div');
+      divEl.id = 'player';
+      divEl.style.display = 'none';
+      document.body.append(divEl);      
 
-    let divEl = document.createElement('div');
-    divEl.id = 'player';
-    divEl.style.display = 'none';
-    document.body.append(divEl);
-    var ytPlayer;
-
-     (function () {
       ytPlayer = new window.YT.Player('player', {
         height: '360',
         width: '640',
@@ -22,10 +22,9 @@ export default function YoutubePlayer () {
           loop: 1
         }
       });
-      
-      setPlayer(ytPlayer);
-     })()
 
+      setPlayer(ytPlayer);      
+    }
   }, []);
 
   return { player, setPlayer };

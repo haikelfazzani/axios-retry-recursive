@@ -14,6 +14,7 @@ export default function App () {
   const [vidInfos, setVidInfos] = useState({ vidId: '', vidTitle: null });
 
   const [vidList, setVidList] = useState([]);
+  
 
   useEffect(() => {
     if (player) {

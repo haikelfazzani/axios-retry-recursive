@@ -15,13 +15,11 @@ export default function App () {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (window.player) {
-      player.addEventListener('onReady', async () => {
-        let listVids = await StorageManager.getList();
-        setVidList(listVids);
-      });
-    }
-  }, [window.player]);
+    (async () => {
+      let listVids = await StorageManager.getList();
+      setVidList(listVids);
+    })();
+  }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();

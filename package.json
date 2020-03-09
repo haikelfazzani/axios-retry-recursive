@@ -2,7 +2,7 @@
   "name": "yplayer",
   "version": "1.0.0",
   "description": "Youtube audio player for windows",
-  "main": "dist/electron.js",
+  "main": "main_process/electron.js",
   "icon": "icons/logo48.png",
   "scripts": {
     "start": "webpack-dev-server  --config webpack.dev.js",
@@ -70,10 +70,11 @@
       "output": "build"
     },
     "files": [
-      "dsit/electron.js",
+      "dist/electron.js",
       "dist/*",
       "dist/*/**",
-      "!**/node_modules/*"
+      "!**/node_modules/*",
+      "!icons"
     ]
   }
 }

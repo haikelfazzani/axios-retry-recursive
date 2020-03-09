@@ -1,0 +1,40 @@
+.controls {
+  display: flex;
+  flex-direction: column;
+  
+  .btn-controls {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: #0d1219;
+    button {
+      color: #ffffff;
+      background-color: inherit;
+      padding: 13px 20px !important;
+      border: 0;
+
+      &:hover {
+        color: #ffffff;
+      }
+    }
+  }
+
+  p {
+    width: 100%;
+    color: #ffffff !important;
+    font-size: 12px !important;
+    padding: 10px 0 5px 0;
+    text-align: center;   
+  }
+
+  .progress-container {
+    height: 5px;
+    width: 100%;
+
+    .progress {
+      height: 100%;
+      width: 0;
+      background-color: #0091ff;
+    }
+  }
+}

@@ -10,7 +10,7 @@ import Valid from './util/Valid.js';
 export default function App () {
 
   const { globalState, setGlobalState } = useContext(GlobalContext);
-  const [vidInfos, setVidInfos] = useState({ vidId: '', vidTitle: null, avatar: '' });
+  const [vidInfos, setVidInfos] = useState({ vidId: '', vidTitle: null });
   const [vidList, setVidList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -32,12 +32,12 @@ export default function App () {
 
         window.ytdlCore.getBasicInfo(inputVidId, (err, info) => {
 
-          p.push({ vidId: inputVidId, vidTitle: info.title, avatar: info.author.avatar });
+          p.push({ vidId: inputVidId, vidTitle: info.title });
 
-          setVidInfos({ ...vidInfos, vidTitle: info.title, avatar: info.author.avatar });
+          setVidInfos({ ...vidInfos, vidTitle: info.title });
           setVidList(p);
 
-          StorageManager.saveOne({ vidId: inputVidId, vidTitle: info.title, avatar: info.author.avatar });
+          StorageManager.saveOne({ vidId: inputVidId, vidTitle: info.title });
           setVidInfos({ vidId: '' });
         });
       }
@@ -50,22 +50,22 @@ export default function App () {
       setGlobalState({
         ...globalState, controls: {
           ...globalState.controls,
-          currentVidPlay: vidIdx,
-          currVidTitle: vidList[vidIdx].vidTitle
+          currentVidPlay: vidIdx
         }
       });
     }
   }
 
   const onRemoveTrack = async (vidId) => {
-    let p = [...vidList];
-    p = p.filter(v => v.vidId !== vidId);
+    let p = [];
+    p = vidList.filter(v => v.vidId !== vidId);
     setVidList(p);
     await StorageManager.removeOne(vidId);
   }
 
-  return (<>
+  const onExternal = () => { window.shell.openExternal('https://github.com/haikelfazzani') }
 
+  return (<>
     <div className="player">
 
       <PlayerControls player={window.player} />
@@ -98,9 +98,9 @@ export default function App () {
     </div>
 
     {isModalOpen && <Modal>
-      <div className="about">
-        <p>Copyright © Yplayer - 2020</p>
-        <a href="https://github.com/haikelfazzani">Created by Haikel Fazzani</a>
+      <div className="about">        
+        <div onClick={onExternal}>Created by Haikel Fazzani</div>
+        <p className="m-0">Copyright © Yplayer - 2020</p>
       </div>
     </Modal>}
   </>);

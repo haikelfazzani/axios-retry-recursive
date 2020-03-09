@@ -1,15 +1,16 @@
-import React, { useContext, useState } from 'react';
-import GlobalContext from '../providers/GlobalContext';
+import React, { useState, useEffect } from 'react';
+import '../styles/PlayerControls.scss';
 
-export default function Controls ({ player }) {
+export default function PlayerControls ({ player }) {
 
-  const { globalState } = useContext(GlobalContext);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(50);
+  const [progress, setProgress] = useState(0);
+  const [trackTitle, setTrackTitle] = useState('Enjoy music with Yplayer..');
 
   const playVideo = () => { player.playVideo() }
   const pauseVideo = () => { player.pauseVideo() }
-  const stopVideo = () => { player.stopVideo() }
+  const stopVideo = () => { player.stopVideo(); setProgress(0); }
 
   const muteVideo = () => {
     player.isMuted() ? player.unMute() : player.mute();
@@ -21,21 +22,47 @@ export default function Controls ({ player }) {
     setVolume(e.target.value);
   }
 
-  return <div className="controls">
+  useEffect(() => {
 
-    <div className="d-flex-sp">
+    var tackCurrDuration = 0;
+    var myTrackTimer;
+
+    player.addEventListener('onStateChange', (event) => {
+
+      setTrackTitle(player.getVideoData().title);
+
+      if (event.data == 1) {
+        let totalDuration = Math.floor(player.getDuration());
+
+        myTrackTimer = setInterval(() => {
+          tackCurrDuration = (player.getCurrentTime() / totalDuration) * 100;
+          setProgress(tackCurrDuration);
+        }, 1000);
+      }
+      else {
+        if (tackCurrDuration >= 98) { setProgress(100); }
+        clearInterval(myTrackTimer);
+      }
+    });
+  }, []);
+
+  return <div className="controls">    
+
+    <p className="track-title m-0 truncate"><i className="fas fa-music mr-5"></i><span>{trackTitle}</span></p>
+
+    <div className="progress-container">
+      <div className="progress" style={{ width: progress + '%' }}></div>
+    </div>
+
+    <div className="btn-controls">
       <button onClick={playVideo}><i className="fas fa-play"></i></button>
       <button onClick={pauseVideo}><i className="fas fa-pause"></i></button>
       <button onClick={stopVideo}><i className="fas fa-stop"></i></button>
-    </div>
-
-    <p className="m-0 truncate w-30">{globalState.controls.currVidTitle}</p>
-    <div className="d-flex">
-      <button onClick={muteVideo} className="mr-10">
+      <button onClick={muteVideo}>
         <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"}></i>
       </button>
-      <input type="range" min="1" max="100" className="w-100"
-        onChange={onVolume} value={volume} />
+
+      <input type="range" min="1" max="100" className="mr-10" onChange={onVolume} value={volume} />
     </div>
 
   </div>;

@@ -6,9 +6,12 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    background-color: #0d1219;
+    align-items: center;
+    background-color: #161618;
+    box-shadow: 0 16px 28px 0 rgba(99,99,99,.2);
+
     button {
-      color: #ffffff;
+      color: #ff9c1b;
       background-color: inherit;
       padding: 13px 20px !important;
       border: 0;
@@ -17,14 +20,13 @@
         color: #ffffff;
       }
     }
-  }
 
-  p {
-    width: 100%;
-    color: #ffffff !important;
-    font-size: 12px !important;
-    padding: 10px 0 5px 0;
-    text-align: center;   
+    .track-title {
+      color: #ffffff !important;
+      font-size: 12px !important; 
+      width: 100%;
+      max-width: 40%;
+    }
   }
 
   .progress-container {
@@ -34,7 +36,7 @@
     .progress {
       height: 100%;
       width: 0;
-      background-color: #0091ff;
+      background-color: #ff9c1b; /* 0091ff */
     }
   }
 }

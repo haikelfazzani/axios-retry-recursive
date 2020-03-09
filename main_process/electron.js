@@ -7,7 +7,7 @@ let isProd = true;
 
 function createWindow () {
   mainWindow = new BrowserWindow({
-    width: 500, height: 550,
+    width: 450, height: 550,
     webPreferences: {
       nodeIntegration: true,
       preload: __dirname + '/preload.js'

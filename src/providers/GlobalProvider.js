@@ -3,13 +3,10 @@ import GlobalContext from './GlobalContext';
 
 /** init values global state */
 let initState = {
-  controls: {
-    volume: 50,
-    isMuted: false,
-    currentVidPlay: 0
-  },
-  vidList: [],
-  vidInfos: { vidId: '', vidTitle: null }
+  currTrackId: '',
+  currTrackIndex: 0,
+  currTrackTitle: null,
+  vidList: []
 };
 
 export default function GlobalProvider ({ children }) {

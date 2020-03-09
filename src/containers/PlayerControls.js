@@ -84,7 +84,7 @@ export default function PlayerControls () {
 
         <div>
           <Button onClick={openVolume} faIcon="fas fa-volume-up" />
-          <Button onClick={() => { setIsModalOpen(!isModalOpen); }} faIcon="fab fa-dyalog" />
+          <Button onClick={() => { setIsModalOpen(!isModalOpen); }} faIcon="fas fa-info" />
         </div>
       </div>
 
